@@ -1,0 +1,6 @@
+{
+  "name": "Game Top-Up Bazar",
+  "description": "A secure, fully customizable in-game items and top-up store for Free Fire, PUBG, Clash of Clans, and more, complete with a payment gateway simulator, user accounts, and a rich admin dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

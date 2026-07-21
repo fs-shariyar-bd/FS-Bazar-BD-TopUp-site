@@ -1,0 +1,295 @@
+{
+  "users": [
+    {
+      "id": "admin-id",
+      "email": "admin@bazar.com",
+      "password": "admin",
+      "name": "Store Administrator",
+      "role": "admin",
+      "walletBalance": 15000,
+      "number": "01787375523"
+    },
+    {
+      "id": "customer-id",
+      "email": "customer@bazar.com",
+      "password": "user",
+      "name": "Ferdous Shariyar",
+      "role": "customer",
+      "walletBalance": 1250,
+      "number": "01999999999"
+    }
+  ],
+  "games": [
+    {
+      "id": "less-is-more",
+      "name": "Less is More",
+      "logo": "https://images.unsplash.com/photo-1595152230551-214d001a1c6f?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Cheap Free Fire Less is More discount pack. Safe & fast delivery into your player ID.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": true,
+      "topupOptions": [
+        {
+          "id": "lim-520",
+          "name": "520 Diamonds",
+          "price": 160,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "freefire-id-code",
+      "name": "Free Fire (ID CODE)",
+      "logo": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Direct player ID top-up for Garena Free Fire. Processed in 1-5 minutes.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": true,
+      "topupOptions": [
+        {
+          "id": "ff-weekly-lite",
+          "name": "Weekly Lite",
+          "price": 45,
+          "stock": 999
+        },
+        {
+          "id": "ff-weekly-1x",
+          "name": "1X Weekly",
+          "price": 158,
+          "stock": 999
+        },
+        {
+          "id": "ff-weekly-2x",
+          "name": "2X Weekly",
+          "price": 315,
+          "stock": 0
+        },
+        {
+          "id": "ff-505",
+          "name": "505 Diamonds",
+          "price": 350,
+          "stock": 999
+        },
+        {
+          "id": "ff-1010",
+          "name": "1010 Diamonds",
+          "price": 690,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "freefire-200-likes",
+      "name": "Free Fire - 200 Like প্রতিদিন",
+      "logo": "https://images.unsplash.com/photo-1614680376593-902f74fa0d41?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Increase your Free Fire profile popularity. Get 200 player likes daily.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "ff-likes-200",
+          "name": "200 Profile Likes",
+          "price": 50,
+          "stock": 500
+        }
+      ]
+    },
+    {
+      "id": "ff-unipin-voucher",
+      "name": "FF UNIPIN VOUCHER",
+      "logo": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&q=80&w=400",
+      "category": "vouchers",
+      "description": "Garena Free Fire vouchers powered by UniPin. Redeem instantly.",
+      "inputsRequired": [
+        "email"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "unipin-ff-100",
+          "name": "100 Diamonds Voucher",
+          "price": 95,
+          "stock": 999
+        },
+        {
+          "id": "unipin-ff-310",
+          "name": "310 Diamonds Voucher",
+          "price": 275,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "evo-access-id-code",
+      "name": "Evo Access ( ID CODE )",
+      "logo": "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Get instant access to Garena Evo gun upgrade token crates via player ID.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "evo-access-basic",
+          "name": "Evo Basic Token Pack",
+          "price": 250,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "new-level-up-pass",
+      "name": "New Level Up Pass",
+      "logo": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Garena Free Fire New Level Up Pass. High diamond return on leveling up.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": true,
+      "topupOptions": [
+        {
+          "id": "ff-level-pass",
+          "name": "Level Up Pass",
+          "price": 190,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "indonesia-server-id",
+      "name": "(Indonesia Server ID)",
+      "logo": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Special top-up service for Garena Free Fire Indonesia Server accounts.",
+      "inputsRequired": [
+        "playerId"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "indonesia-ff-140",
+          "name": "140 Diamonds (ID)",
+          "price": 150,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "pubg-uc-voucher",
+      "name": "PUBG UC VOUCHER",
+      "logo": "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&q=80&w=400",
+      "category": "vouchers",
+      "description": "Instant digital codes for PUBG Mobile Unknown Cash (UC). Redeem on Midasbuy.",
+      "inputsRequired": [
+        "email"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "pubg-v-60",
+          "name": "60 UC Code",
+          "price": 85,
+          "stock": 999
+        },
+        {
+          "id": "pubg-v-325",
+          "name": "325 UC Code",
+          "price": 410,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "pubg-mobile-uc",
+      "name": "PUBG MOBILE UC",
+      "logo": "https://images.unsplash.com/photo-1612287230202-1bf1d85d1bdf?auto=format&fit=crop&q=80&w=400",
+      "category": "mobile",
+      "description": "Official PUBG Mobile UC delivered directly into your game mailbox via Player ID.",
+      "inputsRequired": [
+        "playerId",
+        "characterName"
+      ],
+      "isPopular": true,
+      "topupOptions": [
+        {
+          "id": "pubg-uc-60",
+          "name": "60 UC Direct",
+          "price": 90,
+          "stock": 999
+        },
+        {
+          "id": "pubg-uc-325",
+          "name": "325 UC Direct",
+          "price": 420,
+          "stock": 999
+        },
+        {
+          "id": "pubg-uc-660",
+          "name": "660 UC Direct",
+          "price": 840,
+          "stock": 999
+        }
+      ]
+    },
+    {
+      "id": "youtube-premium",
+      "name": "YouTube Premium",
+      "logo": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=400",
+      "category": "subscriptions",
+      "description": "Ad-free YouTube, background play, and YouTube Music subscription.",
+      "inputsRequired": [
+        "email"
+      ],
+      "isPopular": false,
+      "topupOptions": [
+        {
+          "id": "yt-premium-1m",
+          "name": "1-Month Private Upgrade",
+          "price": 99,
+          "stock": 999
+        },
+        {
+          "id": "yt-premium-3m",
+          "name": "3-Month Family Plan Slot",
+          "price": 280,
+          "stock": 999
+        }
+      ]
+    }
+  ],
+  "orders": [],
+  "transactions": [],
+  "config": {
+    "activeHeaderTemplate": "classic",
+    "activeCardTemplate": "grid",
+    "themeColor": "emerald",
+    "siteName": "Pipo RRR Bazar",
+    "siteSlogan": "Secure & Instant Game Top-Up",
+    "supportPhone": "+8801787375523",
+    "supportWhatsApp": "+8801787375523",
+    "announcementText": "Welcome to Pipo RRR Bazar! We offer instant automatic bKash & Nagad Top-up with 24/7 client support.",
+    "banners": [
+      {
+        "id": "banner-1",
+        "imageUrl": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1200",
+        "title": "কিভাবে ১ সেকেন্ডে PUBG UC ও FF Diamond কিনবেন?",
+        "subtitle": "bKash / Nagad Instant Auto-Payment System"
+      },
+      {
+        "id": "banner-2",
+        "imageUrl": "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&q=80&w=1200",
+        "title": "Clash of Clans Gold Pass Discount!",
+        "subtitle": "Get COC Gold Pass and Gems at the cheapest rate in BD."
+      }
+    ]
+  }
+}
