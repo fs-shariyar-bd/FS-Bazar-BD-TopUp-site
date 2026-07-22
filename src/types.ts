@@ -54,7 +54,8 @@ export interface Banner {
 }
 
 export interface SiteConfig {
-  activeHeaderTemplate: 'classic' | 'modern' | 'minimal' | 'glowing';
+  activeHeaderTemplate: 'classic' | 'modern' | 'minimal' | 'glowing' | 'cyberpunk' | 'esports' | 'style-1' | 'style-2' | 'style-3' | 'style-4';
+  activeFooterTemplate?: 'style-1' | 'style-2' | 'style-3' | 'style-4' | 'classic' | 'cyberpunk' | 'esports' | 'minimal';
   activeCardTemplate: 'grid' | 'compact' | 'modern' | 'hover_glow';
   themeColor: 'emerald' | 'cyan' | 'violet' | 'amber' | 'rose' | 'slate';
   activeWebsiteTemplate?: 'classic' | 'cyberpunk' | 'esports' | 'retro';

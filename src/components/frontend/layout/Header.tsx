@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Search, User, Wallet, LogOut, LayoutDashboard, Settings, Compass, PhoneCall } from 'lucide-react';
 import { User as UserType, SiteConfig } from '../../../types';
-
-const siteLogo = '/src/assets/images/fs_bazar_logo.png';
+import fsBazarLogo from '../../../assets/images/fs_bazar_logo.png';
 
 interface MobileHeaderProps {
   user: UserType | null;
@@ -16,40 +15,12 @@ function MobileHeader({ user, onNavigate, onOpenAuthModal }: MobileHeaderProps) 
   return (
     <header className="block md:hidden w-full bg-gradient-to-r from-[#ece9fc]/90 via-[#f5f3ff]/95 to-[#ebeeff]/90 backdrop-blur-md border-b border-purple-200/40 sticky top-0 z-50 px-4 py-3 shadow-xs">
       <div className="flex items-center justify-between">
-        {/* Brand Logo - TB Topup Bazar */}
+        {/* Brand Logo - FS Bazar Logo */}
         <div 
           onClick={() => onNavigate('home')} 
           className="flex items-center gap-1.5 cursor-pointer select-none active:scale-98 transition-all"
         >
-          {/* Crown + Shield group */}
-          <div className="relative flex flex-col items-center">
-            {/* Crown */}
-            <div className="text-[#5e17eb] -mb-[3px] z-10">
-              <svg className="w-5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M2 22h20v-2H2v2zm1-3l3-12 4 4 4-8 4 8 4-4 3 12H3z" />
-              </svg>
-            </div>
-            {/* Shield with TB */}
-            <div 
-              className="relative w-8 h-8 bg-gradient-to-b from-[#7c3aed] to-[#5b21b6] flex items-center justify-center shadow-md shadow-purple-500/10 border border-purple-400/20" 
-              style={{ 
-                clipPath: 'polygon(50% 0%, 100% 22%, 100% 78%, 50% 100%, 0% 78%, 0% 22%)',
-                borderRadius: '0 0 4px 4px'
-              }}
-            >
-              <span className="text-white font-sans font-black text-[10px] tracking-tight">TB</span>
-            </div>
-          </div>
-          
-          {/* Logo text side */}
-          <div className="flex flex-col items-start leading-none mt-1">
-            <div className="bg-[#5e17eb] text-white px-1 py-0.5 rounded-xs text-[7px] font-black tracking-wider uppercase">
-              TOPUP
-            </div>
-            <div className="text-xs font-black text-slate-900 tracking-widest mt-0.5">
-              BAZAR
-            </div>
-          </div>
+          <img src={fsBazarLogo} alt="Logo" className="h-9 w-auto object-contain" />
         </div>
 
         {/* Right side: Wallet & User profile */}

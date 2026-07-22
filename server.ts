@@ -163,6 +163,7 @@ function getInitialData() {
 
   const defaultSiteConfig: SiteConfig = {
     activeHeaderTemplate: "classic",
+    activeFooterTemplate: "style-1",
     activeCardTemplate: "grid",
     themeColor: "emerald",
     activeWebsiteTemplate: "classic",

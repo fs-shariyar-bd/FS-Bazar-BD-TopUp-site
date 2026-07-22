@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Game, TopupOption, User, SiteConfig } from './types';
-import Header from './components/frontend/layout/Header';
+import Header from './template/header';
+import DynamicFooter from './template/footer';
 import GameCard from './components/frontend/common/GameCard';
 import BannerSlider from './components/frontend/common/BannerSlider';
 import UserDashboard from './components/frontend/user/UserDashboard';
@@ -8,6 +9,7 @@ import AdminPanel from './components/admin/AdminPanel';
 import PaymentModal from './components/frontend/common/PaymentModal';
 import AccountSidebar from './components/frontend/user/AccountSidebar';
 import InstallAppPopup from './components/frontend/common/InstallAppPopup';
+import InfoPage from './components/frontend/common/InfoPage';
 import { 
   X, CheckCircle, ShieldCheck, HeartHandshake, Phone, Mail, 
   HelpCircle, MessageCircle, AlertCircle, ShoppingBag, ShieldAlert,
@@ -48,7 +50,7 @@ export default function App() {
   const [newConfirmPassword, setNewConfirmPassword] = useState('');
 
   // Page Navigation State
-  const [currentPage, setCurrentPage] = useState<'home' | 'user' | 'admin'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'user' | 'admin' | 'info'>('home');
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -118,10 +120,16 @@ export default function App() {
 
   // Update current page and mobile tab whenever current path changes
   useEffect(() => {
-    if (currentPath.startsWith('/admin/')) {
+    if (currentPath.startsWith('/admin')) {
       setCurrentPage('admin');
-    } else if (currentPath.startsWith('/user/')) {
+    } else if (currentPath.startsWith('/user')) {
       setCurrentPage('user');
+      if (currentPath.includes('profile')) setUserDashboardTab('profile');
+      else if (currentPath.includes('deposit') && !currentPath.includes('deposits_log')) setUserDashboardTab('deposit');
+      else if (currentPath.includes('deposits_log')) setUserDashboardTab('deposits_log');
+      else if (currentPath.includes('orders')) setUserDashboardTab('orders');
+    } else if (['/privacy', '/terms', '/refund', '/contact', '/about'].some(p => currentPath.startsWith(p))) {
+      setCurrentPage('info');
     } else {
       setCurrentPage('home');
     }
@@ -478,16 +486,19 @@ export default function App() {
     }
   };
 
-  const handleNavigate = (page: 'home' | 'user' | 'admin') => {
-    if (page === 'user') {
+  const handleNavigate = (page: string) => {
+    if (page === 'home' || page === '/') {
+      setSelectedGame(null);
+      navigateTo('/');
+    } else if (page === 'user' || page.startsWith('/user')) {
       if (user) {
-        setIsSidebarOpen(true);
+        navigateTo(page === 'user' ? '/user/profile' : page);
       } else {
         setAuthMode('login');
         setAuthModalOpen(true);
         showToast('Please log in to access your dashboard.', 'error');
       }
-    } else if (page === 'admin') {
+    } else if (page === 'admin' || page.startsWith('/admin')) {
       const isLogged = sessionStorage.getItem('admin_logged_in') === 'true';
       if (isLogged) {
         navigateTo('/admin/dashboard');
@@ -495,7 +506,7 @@ export default function App() {
         navigateTo('/admin/191869-login');
       }
     } else {
-      navigateTo('/');
+      navigateTo(page.startsWith('/') ? page : `/${page}`);
     }
   };
 
@@ -540,8 +551,23 @@ export default function App() {
 
   const currentThemeHex = themeColors[config.themeColor || 'emerald'];
 
+  const activeTpl = config.activeWebsiteTemplate || 'classic';
+
+  const getWrapperClass = () => {
+    if (activeTpl === 'cyberpunk') {
+      return "min-h-screen bg-[#070b14] text-slate-100 font-mono selection:bg-cyan-500 selection:text-black pb-12 flex flex-col justify-between";
+    }
+    if (activeTpl === 'esports') {
+      return "min-h-screen bg-[#090d18] text-slate-100 font-sans selection:bg-violet-600 selection:text-white pb-12 flex flex-col justify-between";
+    }
+    if (activeTpl === 'retro') {
+      return "min-h-screen bg-[#110520] text-slate-100 font-mono selection:bg-rose-500 selection:text-white pb-12 flex flex-col justify-between";
+    }
+    return "min-h-screen bg-[#f4f7f9] text-slate-800 font-sans selection:bg-[#20947c] selection:text-white pb-12 flex flex-col justify-between";
+  };
+
   return (
-    <div id="app-wrapper" className="min-h-screen bg-[#f4f7f9] text-slate-800 font-sans selection:bg-[#20947c] selection:text-white pb-12 flex flex-col justify-between">
+    <div id="app-wrapper" className={getWrapperClass()}>
       
       {/* GLOBAL TOAST NOTIFIER */}
       <AnimatePresence>
@@ -563,44 +589,60 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <div className="w-full">
-        {/* CUSTOM SELECTED HEADER TEMPLATE */}
-        <Header 
-          user={user}
+      {currentPage === 'admin' ? (
+        /* ADMIN PANEL (Has its own dedicated Admin Header, navigation & sidebar) */
+        <AdminPanel 
+          games={games}
           config={config}
-          onLogout={handleLogout}
-          onOpenAuthModal={(mode) => {
-            setAuthMode(mode);
-            setAuthModalOpen(true);
+          onRefreshGames={loadAppConfigs}
+          onRefreshConfig={(updatedConfig) => {
+            setConfig(updatedConfig);
           }}
-          onNavigate={handleNavigate}
-          onSearch={(val) => {
-            setSearchQuery(val);
-            setSelectedGame(null);
-            if (currentPage !== 'home') {
-              setCurrentPage('home');
-            }
-          }}
+          showToast={showToast}
+          adminPath={currentPath.includes('dashboard') ? 'dashboard' : 'login'}
+          onNavigate={navigateTo}
         />
+      ) : (
+        /* FRONTEND PUBLIC STORE LAYOUT */
+        <>
+          <div className="w-full">
+            {/* CUSTOM SELECTED FRONTEND HEADER TEMPLATE */}
+            <Header 
+              user={user}
+              config={config}
+              onLogout={handleLogout}
+              onOpenAuthModal={(mode) => {
+                setAuthMode(mode);
+                setAuthModalOpen(true);
+              }}
+              onNavigate={handleNavigate}
+              onSearch={(val) => {
+                setSearchQuery(val);
+                setSelectedGame(null);
+                if (currentPage !== 'home') {
+                  setCurrentPage('home');
+                }
+              }}
+            />
 
-        {/* Dynamic Announcement Alert Marquee (reserves space cleanly) */}
-        {config && config.showNoticeBanner !== false && (
-          <div id="announcement-ticker" className="w-full bg-slate-900 border-b border-slate-800 py-2.5 overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 flex items-center gap-3 text-xs">
-              <span className={`bg-${currentThemeHex}/10 border border-${currentThemeHex}/30 text-${currentThemeHex} font-black text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-sm shrink-0 animate-pulse`}>
-                Notice
-              </span>
-              <div className="relative w-full overflow-hidden h-4">
-                <div className="absolute whitespace-nowrap animate-marquee font-medium text-slate-300">
-                  {config.announcementText}
+            {/* Dynamic Announcement Alert Marquee */}
+            {config && config.showNoticeBanner !== false && (
+              <div id="announcement-ticker" className="w-full bg-slate-900 border-b border-slate-800 py-2.5 overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 flex items-center gap-3 text-xs">
+                  <span className={`bg-${currentThemeHex}/10 border border-${currentThemeHex}/30 text-${currentThemeHex} font-black text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-sm shrink-0 animate-pulse`}>
+                    Notice
+                  </span>
+                  <div className="relative w-full overflow-hidden h-4">
+                    <div className="absolute whitespace-nowrap animate-marquee font-medium text-slate-300">
+                      {config.announcementText}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* PRIMARY MAIN LAYOUT CANVAS */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
+            {/* PRIMARY MAIN LAYOUT CANVAS */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 pb-24 md:pb-8">
           
           {currentPage === 'home' && !selectedGame && (
             <div id="home-view" className="space-y-12">
@@ -659,6 +701,7 @@ export default function App() {
                       game={game}
                       template={config.activeCardTemplate}
                       themeColor={config.themeColor}
+                      activeWebsiteTemplate={config.activeWebsiteTemplate}
                       onSelect={(g) => {
                         navigateTo(`/game/${g.id}`);
                         setSelectedOption(null);
@@ -1000,160 +1043,26 @@ export default function App() {
             />
           )}
 
-          {currentPage === 'admin' && (
-            <AdminPanel 
-              games={games}
-              config={config}
-              onRefreshGames={loadAppConfigs}
-              onRefreshConfig={(updatedConfig) => {
-                setConfig(updatedConfig);
-              }}
-              showToast={showToast}
-              adminPath={currentPath.includes('dashboard') ? 'dashboard' : 'login'}
-              onNavigate={navigateTo}
+          {currentPage === 'info' && (
+            <InfoPage 
+              path={currentPath} 
+              config={config} 
+              onNavigate={handleNavigate} 
             />
           )}
 
         </main>
       </div>
 
-      {/* FOOTER AREA (Exactly resembling the emerald green Pipobazar footer in image 2) */}
-      <footer id="main-footer" className="w-full bg-[#20947c] text-white text-left mt-20 pt-12 text-xs">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 pb-12">
-          
-          {/* Column 1: SUPPORT (Oval capsule boxes) */}
-          <div className="lg:col-span-4 space-y-4 text-left">
-            <h3 className="text-sm font-extrabold uppercase tracking-widest text-white mb-6">Support</h3>
-            <div className="space-y-3">
-              {/* Phone Capsule */}
-              <div className="border border-white/20 hover:border-white/40 rounded-full px-5 py-3 flex items-center gap-4 bg-white/5 backdrop-blur-xs max-w-sm transition-all">
-                <Phone size={20} className="text-white shrink-0" />
-                <div className="h-8 w-[1px] bg-white/20" />
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] text-white/75 font-semibold uppercase tracking-wider">9AM - 10PM</span>
-                  <span className="text-sm font-black tracking-wide text-white">{config.supportPhone}</span>
-                </div>
-              </div>
-              
-              {/* WhatsApp Capsule */}
-              <a 
-                href={`https://wa.me/${config.supportWhatsApp}`} 
-                target="_blank" 
-                rel="noreferrer" 
-                className="border border-white/20 hover:border-white/40 rounded-full px-5 py-3 flex items-center gap-4 bg-white/5 backdrop-blur-xs max-w-sm transition-all block group cursor-pointer"
-              >
-                <div className="flex items-center gap-4 w-full">
-                  <MessageCircle size={20} className="text-white shrink-0 group-hover:scale-110 transition-transform" />
-                  <div className="h-8 w-[1px] bg-white/20" />
-                  <div className="flex flex-col text-left">
-                    <span className="text-[9px] text-white/75 font-semibold uppercase tracking-wider">9AM - 10PM</span>
-                    <span className="text-sm font-black tracking-wide text-white">{config.supportPhone}</span>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-
-          {/* Column 2 & 3: ABOUT & micro links split */}
-          <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <h3 className="text-sm font-extrabold uppercase tracking-widest text-white mb-6">About</h3>
-              <ul className="space-y-3 text-white/85 font-semibold text-[11px]">
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Terms & condition</button></li>
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Privacy Policy</button></li>
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Shipment Info</button></li>
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Refund and Return Policy</button></li>
-              </ul>
-            </div>
-            
-            <div className="space-y-4 pt-10">
-              <ul className="space-y-3 text-white/85 font-semibold text-[11px]">
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Contact</button></li>
-                <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">About us</button></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Column 4: Quick Top-ups */}
-          <div className="lg:col-span-1.5 space-y-4 text-left">
-            <h3 className="text-sm font-extrabold uppercase tracking-widest text-white mb-6">&nbsp;</h3>
-            <ul className="space-y-3 text-white/85 font-semibold text-[11px]">
-              <li><button onClick={() => { handleNavigate('home'); setSelectedGame(games.find(g => g.id === 'freefire-id-code') || null); }} className="hover:underline transition-all">Free Fire</button></li>
-              <li><button onClick={() => { handleNavigate('home'); setSelectedGame(games.find(g => g.id === 'pubg-mobile-uc') || null); }} className="hover:underline transition-all">Pubg Mobile</button></li>
-              <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Call of Duty</button></li>
-              <li><button onClick={() => handleNavigate('home')} className="hover:underline transition-all">Clash of clan</button></li>
-            </ul>
-          </div>
-
-          {/* Column 5: STAY CONNECTED */}
-          <div className="lg:col-span-1.5 space-y-4 text-left">
-            <h3 className="text-sm font-extrabold uppercase tracking-widest text-white mb-6">Stay Connected</h3>
-            <div className="space-y-2 text-[11px]">
-              <span className="font-extrabold text-white block">{config?.siteName || "Pipobazar"}</span>
-              <span className="text-white/80 block leading-tight font-medium">Email: <span className="font-semibold">{config?.supportEmail || "pipobazarofficial@gmail.com"}</span></span>
-            </div>
-            <div className="flex gap-2.5 pt-2">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center text-white">
-                <Facebook size={14} className="fill-white" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center text-white">
-                <Youtube size={14} className="fill-white" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 transition-all flex items-center justify-center text-white">
-                <Instagram size={14} />
-              </a>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Full-width white payment bar with clean white blocks */}
-        <div className="w-full bg-white py-4 border-y border-slate-100 flex items-center">
-          <div className="max-w-7xl mx-auto px-6 w-full flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-slate-400 font-extrabold tracking-widest text-xs uppercase">Pay with</span>
-              <div className="h-5 w-[1px] bg-slate-200 hidden md:inline" />
-            </div>
-            
-            {/* Payment options logo rows matching the layout perfectly */}
-            <div className="flex flex-wrap items-center justify-center gap-1.5 text-[9px] font-black tracking-tight select-none">
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-blue-800 font-serif">VISA</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-amber-600 font-sans">MasterCard</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-sky-700 font-sans">Amex</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-emerald-800 font-serif">UnionPay</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-purple-700 font-sans font-extrabold">Rocket</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-[#E2136E] font-sans font-bold">bKash</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-[#F26422] font-sans font-bold">Nagad</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-indigo-700 font-mono">Meghna Pay</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-yellow-600 font-bold">Upay</span>
-              <span className="bg-slate-50 border border-slate-200/80 rounded px-2 py-1 text-blue-600 font-mono">OK Wallet</span>
-              <span className="bg-slate-50 border border-emerald-500/30 rounded px-2 py-1 text-emerald-600 font-extrabold">Verified by EPS</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom copyright row with circular buttons */}
-        <div className="w-full bg-[#187561] py-4">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-white/95 font-semibold">
-            <span>
-              {config?.footerCopyright ? (
-                <span>{config.footerCopyright}</span>
-              ) : (
-                `© Copyright ${new Date().getFullYear()}. All Rights Reserved. Developed by Pipobazar`
-              )}
-            </span>
-            
-            <div className="flex items-center gap-2">
-              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="h-6 w-6 rounded-full bg-[#ff0000] hover:scale-105 transition-transform flex items-center justify-center text-white shadow-sm">
-                <Youtube size={11} className="fill-white" />
-              </a>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="h-6 w-6 rounded-full bg-[#1877f2] hover:scale-105 transition-transform flex items-center justify-center text-white shadow-sm">
-                <Facebook size={11} className="fill-white" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* DYNAMIC FOOTER TEMPLATE (Configurable from Admin Panel) */}
+      <DynamicFooter 
+        config={config} 
+        games={games} 
+        onNavigate={handleNavigate} 
+        onSelectGame={(g) => { setSelectedGame(g); handleNavigate('home'); }} 
+      />
+    </>
+  )}
 
       {/* MODAL 1: AUTHENTICATION POPUP */}
       <AnimatePresence>

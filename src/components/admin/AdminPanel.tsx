@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Game, Order, Transaction, SiteConfig, TopupOption, Banner } from '../../types';
+import TemplateManagerTable from './TemplateManagerTable';
 import { 
   LayoutDashboard, ShoppingCart, Plus, Sparkles, AlertTriangle, Eye, RefreshCw, 
   Layers, ShieldCheck, Gamepad2, Settings, Image, Trash2, CheckCircle2, XCircle, 
@@ -67,6 +68,7 @@ export default function AdminPanel({ games, config, onRefreshGames, onRefreshCon
   const [siteName, setSiteName] = useState(config.siteName);
   const [siteSlogan, setSiteSlogan] = useState(config.siteSlogan);
   const [activeHeader, setActiveHeader] = useState(config.activeHeaderTemplate);
+  const [activeFooter, setActiveFooter] = useState(config.activeFooterTemplate || 'style-1');
   const [activeCard, setActiveCard] = useState(config.activeCardTemplate);
   const [themeColor, setThemeColor] = useState(config.themeColor);
   const [activeWebsiteTemplate, setActiveWebsiteTemplate] = useState<'classic' | 'cyberpunk' | 'esports' | 'retro'>(config.activeWebsiteTemplate || 'classic');
@@ -298,6 +300,7 @@ export default function AdminPanel({ games, config, onRefreshGames, onRefreshCon
         siteName,
         siteSlogan,
         activeHeaderTemplate: activeHeader,
+        activeFooterTemplate: activeFooter,
         activeCardTemplate: activeCard,
         themeColor,
         activeWebsiteTemplate,
@@ -1649,246 +1652,27 @@ export default function AdminPanel({ games, config, onRefreshGames, onRefreshCon
 
                 return (
                   <>
-                    {/* SECTION 1: TEMPLATES NAME VIEW */}
+                    {/* SECTION 1: TEMPLATES NAME VIEW (Exact Table & Edit Form matching screenshots) */}
                     {customizerSubTab === 'template' && (
-                      <form onSubmit={handleConfigSave} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        {/* Left Controls */}
-                        <div className="lg:col-span-6 space-y-5 bg-[var(--surface)] p-5 rounded-2xl border border-[var(--border)] text-left flex flex-col justify-between">
-                          <div className="space-y-5">
-                            <h3 className="text-xs font-black uppercase text-[#20947c] tracking-wider">Aesthetic Layout Configuration</h3>
-                            
-                            {/* Global Website Template Design */}
-                            <div className="space-y-1.5">
-                              <label className="block text-xs font-bold text-slate-300">Global Website Template Design</label>
-                              <select
-                                value={activeWebsiteTemplate}
-                                onChange={(e) => {
-                                  const val = e.target.value as 'classic' | 'cyberpunk' | 'esports' | 'retro';
-                                  setActiveWebsiteTemplate(val);
-                                  // Auto-adjust default compatible configurations for aesthetic synergy
-                                  if (val === 'cyberpunk') {
-                                    setActiveHeader('glowing');
-                                    setActiveCard('hover_glow');
-                                    setThemeColor('cyan');
-                                  } else if (val === 'esports') {
-                                    setActiveHeader('modern');
-                                    setActiveCard('modern');
-                                    setThemeColor('violet');
-                                  } else if (val === 'retro') {
-                                    setActiveHeader('glowing');
-                                    setActiveCard('hover_glow');
-                                    setThemeColor('rose');
-                                  } else {
-                                    setActiveHeader('classic');
-                                    setActiveCard('grid');
-                                    setThemeColor('emerald');
-                                  }
-                                }}
-                                className="w-full bg-[#171C27] border border-[var(--border)] rounded-xl px-3 py-2.5 text-white text-xs focus:outline-none focus:border-[#20947c] cursor-pointer font-medium"
-                              >
-                                <option value="classic">Classic Modern Theme (Emerald/Dark Clean Layout)</option>
-                                <option value="cyberpunk">Cyberpunk Neon Theme (Neon Cyan/Magenta Gaming Vibe)</option>
-                                <option value="esports">Esports Arena Elite Theme (Hot Violet/Orange Gamer Style)</option>
-                                <option value="retro">Retro Arcade Theme (Nostalgic Pixels, Rose Neon & Grid Vibe)</option>
-                              </select>
-                            </div>
-
-                            {/* Header Selector */}
-                            <div className="space-y-1.5">
-                              <label className="block text-xs font-bold text-slate-300">Navigation Header Design</label>
-                              <select
-                                value={activeHeader}
-                                onChange={(e) => setActiveHeader(e.target.value as any)}
-                                className="w-full bg-[#171C27] border border-[var(--border)] rounded-xl px-3 py-2.5 text-white text-xs focus:outline-none focus:border-[#20947c] cursor-pointer font-medium"
-                              >
-                                <option value="classic">Classic Symmetrical (Support Info, Row Layout)</option>
-                                <option value="modern">Modern Minimalist Glassmorphism (Sleek Blur, Floating style)</option>
-                                <option value="minimal">Minimal Editorial Typography (Spacious lines)</option>
-                                <option value="glowing">Glowing Neon Cyberpunk ( Fluorescent glow, Game theme)</option>
-                              </select>
-                            </div>
-
-                            {/* Card Selector */}
-                            <div className="space-y-1.5">
-                              <label className="block text-xs font-bold text-slate-300">Game Cards Grid Layout</label>
-                              <select
-                                value={activeCard}
-                                onChange={(e) => setActiveCard(e.target.value as any)}
-                                className="w-full bg-[#171C27] border border-[var(--border)] rounded-xl px-3 py-2.5 text-white text-xs focus:outline-none focus:border-[#20947c] cursor-pointer font-medium"
-                              >
-                                <option value="grid">Standard Grid Card (Cover banner with action button)</option>
-                                <option value="compact">Compact List Line Card (Fast performance list item)</option>
-                                <option value="modern">Premium Hologram Card (Glass overlay, bottom metadata)</option>
-                                <option value="hover_glow">Theme Border Glow Card (Glows intensely on hover)</option>
-                              </select>
-                            </div>
-
-                            {/* Theme Accent Color */}
-                            <div className="space-y-1.5">
-                              <label className="block text-xs font-bold text-slate-300">Primary Accent Theme Color</label>
-                              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                                {[
-                                  { key: 'emerald', label: 'Green', class: 'bg-[#20947c]' },
-                                  { key: 'cyan', label: 'Cyan', class: 'bg-[#06b6d4]' },
-                                  { key: 'violet', label: 'Violet', class: 'bg-[#8b5cf6]' },
-                                  { key: 'amber', label: 'Amber', class: 'bg-[#f59e0b]' },
-                                  { key: 'rose', label: 'Rose', class: 'bg-[#f43f5e]' },
-                                  { key: 'slate', label: 'Slate', class: 'bg-[#64748b]' },
-                                ].map((col) => (
-                                  <button
-                                    key={col.key}
-                                    type="button"
-                                    onClick={() => setThemeColor(col.key as any)}
-                                    className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all cursor-pointer ${themeColor === col.key ? 'border-[#20947c] bg-[#171C27] ring-2 ring-emerald-500/10' : 'border-[var(--border)] hover:border-slate-700'}`}
-                                  >
-                                    <span className={`w-4 h-4 rounded-full ${col.class} block`} />
-                                    <span className="text-[9px] text-[var(--muted)] font-mono font-bold">{col.label}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="pt-4 border-t border-slate-800 mt-6">
-                            <button
-                              type="submit"
-                              className="w-full py-3 bg-[#20947c] hover:bg-[#187561] text-white font-display font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex justify-center items-center gap-1.5 cursor-pointer active:scale-98"
-                            >
-                              <Save size={14} /> Save Templates Layout
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Right Real-time Sandbox Previews */}
-                        <div className="lg:col-span-6 space-y-6 text-left">
-                          <div className="bg-[#171C27] border border-[var(--border)] p-5 rounded-2xl space-y-5">
-                            <div>
-                              <span className="text-[9px] font-black tracking-widest text-[#20947c] uppercase font-mono">LIVE PREVIEW SANDBOX</span>
-                              <h4 className="font-extrabold text-xs text-slate-400 mt-1 uppercase">REAL-TIME FRONTEND RENDERING</h4>
-                            </div>
-
-                            {/* Live Header Render */}
-                            <div className="space-y-2">
-                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">1. Selected Navigation Header Preview</span>
-                              <div className="p-3 bg-slate-950/40 border border-slate-800/80 rounded-2xl min-h-16 flex items-center justify-center">
-                                {activeHeader === 'classic' && (
-                                  <div className="w-full bg-[#111622] border border-slate-800/80 rounded-xl p-3 shadow-sm space-y-1">
-                                    <div className="flex justify-between items-center text-[10px]">
-                                      <div className="flex items-center gap-1.5">
-                                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: getThemeHex(themeColor) }} />
-                                        <span className="font-black text-white">{siteName || "Website"}</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <div className="text-[8px] bg-[#171C27] text-slate-400 rounded px-1.5 py-0.5">Hotline: {supportPhone}</div>
-                                        <div className="text-white px-2 py-0.5 rounded text-[8px] font-bold" style={{ backgroundColor: getThemeHex(themeColor) }}>Login</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {activeHeader === 'modern' && (
-                                  <div className="w-full bg-slate-900/60 border border-slate-800 rounded-xl p-3 space-y-1">
-                                    <div className="flex justify-between items-center text-[10px]">
-                                      <div className="flex items-center gap-1.5">
-                                        <div className="w-4 h-4 rounded-lg flex items-center justify-center text-white text-[8px] font-black" style={{ backgroundColor: getThemeHex(themeColor) }}>W</div>
-                                        <span className="font-extrabold tracking-widest text-white uppercase">{siteName || "Website"}</span>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <div className="text-white px-2 py-0.5 rounded-full font-bold text-[8px] flex items-center gap-1" style={{ backgroundColor: getThemeHex(themeColor) }}>
-                                          <span>Wallet: 500৳</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {activeHeader === 'minimal' && (
-                                  <div className="w-full bg-slate-950/30 border-b border-slate-800 rounded-xl p-3">
-                                    <div className="flex justify-between items-center text-[10px]">
-                                      <span className="font-sans font-medium tracking-widest text-white border-b pb-0.5 uppercase" style={{ borderColor: getThemeHex(themeColor) }}>{siteName || "Website"}</span>
-                                      <div className="flex items-center gap-3 text-slate-400 font-bold text-[8px]">
-                                        <span className="hover:text-white cursor-pointer">Catalog</span>
-                                        <span className="hover:text-white cursor-pointer">Support</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                                {activeHeader === 'glowing' && (
-                                  <div className="w-full bg-slate-950 border rounded-xl p-3 relative overflow-hidden" style={{ borderColor: getThemeHex(themeColor) + '40', boxShadow: '0 0 12px ' + getThemeHex(themeColor) + '15' }}>
-                                    <div className="absolute top-0 left-0 w-full h-0.5" style={{ backgroundColor: getThemeHex(themeColor) }} />
-                                    <div className="flex justify-between items-center text-[10px]">
-                                      <span className="font-mono font-black text-white tracking-tighter" style={{ textShadow: '0 0 4px ' + getThemeHex(themeColor) }}>{siteName || "WEBSITE"}</span>
-                                      <div className="flex items-center gap-2 font-mono text-[8px]">
-                                        <span className="uppercase animate-pulse" style={{ color: getThemeHex(themeColor) }}>● CONNECTED</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Live Card Render */}
-                            <div className="space-y-2">
-                              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">2. Selected Game Cards Grid Preview</span>
-                              <div className="p-3 bg-slate-950/40 border border-slate-800/80 rounded-2xl min-h-24">
-                                {activeCard === 'grid' && (
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {[1, 2].map(idx => (
-                                      <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden text-center p-2 space-y-2">
-                                        <div className="h-14 bg-slate-800/50 rounded-lg flex items-center justify-center text-[10px] text-slate-400 font-mono">Game Poster</div>
-                                        <div className="space-y-1.5">
-                                          <h4 className="text-[9px] font-bold text-white truncate">Free Fire Top-Up</h4>
-                                          <div className="py-1 px-2.5 rounded-lg text-[8px] font-bold text-white uppercase inline-block" style={{ backgroundColor: getThemeHex(themeColor) }}>Buy Pack</div>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {activeCard === 'compact' && (
-                                  <div className="space-y-1.5">
-                                    {[1, 2].map(idx => (
-                                      <div key={idx} className="bg-slate-900/80 border border-slate-800/60 rounded-xl p-2 flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                          <div className="w-6 h-6 rounded-lg bg-slate-800 flex items-center justify-center text-[9px]">🎮</div>
-                                          <span className="text-[9px] font-bold text-white">PUBG Mobile UC</span>
-                                        </div>
-                                        <div className="text-white px-2 py-0.5 rounded text-[8px] font-bold" style={{ backgroundColor: getThemeHex(themeColor) }}>Select</div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {activeCard === 'modern' && (
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {[1, 2].map(idx => (
-                                      <div key={idx} className="relative rounded-xl overflow-hidden aspect-video bg-slate-900 border border-slate-800">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-                                        <div className="absolute bottom-1.5 left-2 text-left">
-                                          <span className="text-[7px] font-mono uppercase tracking-widest text-slate-400">Game Code</span>
-                                          <h4 className="text-[9px] font-bold text-white">Clash of Clans</h4>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {activeCard === 'hover_glow' && (
-                                  <div className="grid grid-cols-2 gap-3">
-                                    {[1, 2].map(idx => (
-                                      <div key={idx} className="bg-slate-950 border rounded-xl p-2.5 text-center transition-all duration-300" style={{ borderColor: getThemeHex(themeColor), boxShadow: '0 0 8px ' + getThemeHex(themeColor) + '25' }}>
-                                        <div className="w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center text-[9px] mx-auto">💎</div>
-                                        <h4 className="text-[9px] font-black text-white mt-1.5">Mobile Legends</h4>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
+                      <TemplateManagerTable
+                        config={config}
+                        onSaveConfig={async (updatedConfig) => {
+                          const merged = { ...config, ...updatedConfig };
+                          try {
+                            const res = await fetch('/api/config/update', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ config: merged }),
+                            });
+                            if (res.ok) {
+                              onRefreshConfig(merged);
+                            }
+                          } catch (e) {
+                            console.error('Failed saving template config', e);
+                          }
+                        }}
+                        showToast={showToast}
+                      />
                     )}
 
                     {/* SECTION 2: WIDGETS NAME VIEW */}

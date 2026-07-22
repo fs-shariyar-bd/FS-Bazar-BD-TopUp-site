@@ -269,9 +269,10 @@
   "orders": [],
   "transactions": [],
   "config": {
-    "activeHeaderTemplate": "classic",
-    "activeCardTemplate": "grid",
-    "themeColor": "emerald",
+    "logoUrl": "/src/assets/images/fs_bazar_logo.png",
+    "activeHeaderTemplate": "style-3",
+    "activeCardTemplate": "modern",
+    "themeColor": "amber",
     "siteName": "Pipo RRR Bazar",
     "siteSlogan": "Secure & Instant Game Top-Up",
     "supportPhone": "+8801787375523",
@@ -290,6 +291,14 @@
         "title": "Clash of Clans Gold Pass Discount!",
         "subtitle": "Get COC Gold Pass and Gems at the cheapest rate in BD."
       }
-    ]
+    ],
+    "activeFooterTemplate": "style-4",
+    "activeWebsiteTemplate": "classic",
+    "showLiveActivity": true,
+    "showStatsCounter": true,
+    "showNoticeBanner": true,
+    "sectionHomeTitle": "FS Bazar Store",
+    "supportEmail": "pipobazarofficial@gmail.com",
+    "footerCopyright": "© 2026 Pipo Bazar BD. All Rights Reserved."
   }
 }
