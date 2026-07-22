@@ -294,7 +294,7 @@
     ],
     "activeFooterTemplate": "style-4",
     "activeWebsiteTemplate": "classic",
-    "showLiveActivity": true,
+    "showLiveActivity": false,
     "showStatsCounter": true,
     "showNoticeBanner": true,
     "sectionHomeTitle": "FS Bazar Store",

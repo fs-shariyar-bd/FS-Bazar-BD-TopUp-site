@@ -61,52 +61,9 @@ export default function App() {
   const [userDashboardTab, setUserDashboardTab] = useState<'profile' | 'deposit' | 'orders' | 'deposits_log'>('profile');
   const [activeMobileTab, setActiveMobileTab] = useState<'home' | 'deposit' | 'orders' | 'codes' | 'profile'>('home');
 
-  // Periodic Simulated Live Activity purchase ticker (Only runs if enabled in Admin Customizer)
+  // Periodic Simulated Live Activity purchase ticker (Disabled)
   useEffect(() => {
-    if (!config || config.showLiveActivity === false) {
-      setActiveLiveActivity(null);
-      return;
-    }
-
-    const firstNames = ["Sabbir", "Rakib", "Ariful", "Nayeem", "Tasnim", "Sakib", "Tanvir", "Sujon", "Rony", "Maruf", "Sumon", "Arafat", "Sajid", "Habib"];
-    const lastNames = ["A.", "H.", "M.", "S.", "R.", "K.", "N.", "I.", "F.", "B.", "Y."];
-    const itemOffers = [
-      { game: "Free Fire", amount: "115 Diamonds" },
-      { game: "Free Fire", amount: "240 Diamonds" },
-      { game: "Free Fire", amount: "Weekly Lite Pass" },
-      { game: "PUBG Mobile", amount: "60 UC" },
-      { game: "PUBG Mobile", amount: "325 UC" },
-      { game: "Mobile Legends", amount: "86 Diamonds" },
-      { game: "Clash of Clans", amount: "Gold Pass" },
-      { game: "Free Fire", amount: "Monthly Pass" }
-    ];
-
-    const triggerNotification = () => {
-      const fName = firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const offer = itemOffers[Math.floor(Math.random() * itemOffers.length)];
-      
-      setActiveLiveActivity({
-        name: `${fName} ${lName}`,
-        game: offer.game,
-        amount: offer.amount,
-        time: "Just now"
-      });
-
-      // Clear after 6 seconds
-      setTimeout(() => {
-        setActiveLiveActivity(null);
-      }, 6000);
-    };
-
-    // Trigger first purchase after 4 seconds, then every 16 seconds
-    const initialTimeout = setTimeout(triggerNotification, 4000);
-    const interval = setInterval(triggerNotification, 16000);
-
-    return () => {
-      clearTimeout(initialTimeout);
-      clearInterval(interval);
-    };
+    setActiveLiveActivity(null);
   }, [config]);
 
   // Synchronize path and page states on back/forward buttons
@@ -715,38 +672,6 @@ export default function App() {
                 </div>
               )}
 
-              {/* Security features badge */}
-              {config && config.showStatsCounter !== false && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 bg-white border border-slate-200/80 p-6 rounded-3xl mt-12 text-left shadow-xs">
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-2xl text-[#20947c] shrink-0">
-                      <ShieldCheck size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">100% Secure Payments</h4>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Official bKash/Nagad automatic API sandbox checks with immediate transaction logs.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-2xl text-[#20947c] shrink-0">
-                      <Clock size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">Instant Deliveries</h4>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Top-ups are auto-debited or manual queue verified in less than 5 minutes.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 items-start">
-                    <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-2xl text-[#20947c] shrink-0">
-                      <HeartHandshake size={20} />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">Helpdesk Help</h4>
-                      <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">Speak to store owners or reach out directly via WhatsApp for quick assistance.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
 
             </div>
           )}
@@ -1626,37 +1551,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Dynamic Simulated Live Activity Purchase Ticker Toast */}
-      <AnimatePresence>
-        {activeLiveActivity && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 md:bottom-6 left-4 md:left-6 z-[9999] max-w-sm w-full sm:w-[320px] bg-slate-900/95 border border-slate-800 text-white p-3.5 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.4)] backdrop-blur-md flex gap-3 text-left"
-          >
-            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-              <ShoppingBag size={18} className="animate-pulse" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-black text-[#F5B822] uppercase tracking-wide truncate">Live Activity Feed</span>
-                <span className="text-[9px] font-mono font-bold text-emerald-400 shrink-0 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block" />
-                  Delivered
-                </span>
-              </div>
-              <p className="text-[11px] font-extrabold text-white mt-1 leading-tight truncate">
-                {activeLiveActivity.name}
-              </p>
-              <p className="text-[10px] text-slate-300 mt-0.5 font-semibold truncate">
-                Purchased <span className="text-emerald-400 font-bold">{activeLiveActivity.amount}</span> of {activeLiveActivity.game}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
     </div>
   );
